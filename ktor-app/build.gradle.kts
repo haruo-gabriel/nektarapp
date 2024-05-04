@@ -23,10 +23,15 @@ repositories {
 }
 
 dependencies {
+    implementation("org.jetbrains.kotlinx:kotlinx-html-jvm")
+    //implementation("org.jetbrains.kotlinx:kotlinx-html-js")
+    //implementation("org.jetbrains.kotlinx:kotlinx-html")
     implementation("com.github.kittinunf.fuel:fuel:2.3.1")
     implementation("org.json:json:20210307")
+    //implementation("io.ktor:ktor-html")
     implementation("io.ktor:ktor-server-core-jvm")
     implementation("io.ktor:ktor-server-netty-jvm")
+    implementation("io.ktor:ktor-server-html-builder-jvm")
     implementation("ch.qos.logback:logback-classic:$logback_version")
     testImplementation("io.ktor:ktor-server-tests-jvm")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
