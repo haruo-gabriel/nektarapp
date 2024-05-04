@@ -12,6 +12,6 @@ abstract class MovieCollection {
     }
 }
 
-class Watchlist : MovieCollection
+class Watchlist : MovieCollection()
 
-class Favorites : MovieCollection
+class Favorites : MovieCollection()
