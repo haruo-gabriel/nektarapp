@@ -1,22 +1,14 @@
 package com.nektarapp
 
 class People (
-    var biography: String,
-    var birthday: String,
-    var deathday: String,
-    var id: Int,
-    var known_for_department: String,
-    var name: String,
-    var place_of_birth: String,
-    var profile_path: String
-) {
-
-}
-
-class Credits (
-    var movie_id: Int,
-    var id: Int,
-    var cast: List<People>
+    val biography: String,
+    val birthday: String,
+    val deathday: String,
+    val id: Int,
+    val known_for_department: String,
+    val name: String,
+    val place_of_birth: String,
+    val profile_path: String
 ) {
 
 }

@@ -1,13 +1,13 @@
 package com.nektarapp
 
 abstract class MovieCollection {
-    protected var movies: MutableList<Movie> = mutableListOf()
+    private var movies: MutableList<Movie> = mutableListOf()
 
-    protected fun add_movie(movie: Movie) {
+    protected fun addMovie(movie: Movie) {
         movies.add(movie)
     }
 
-    protected fun remove_movie(movie: Movie) {
+    protected fun removeMovie(movie: Movie) {
         movies.remove(movie)
     }
 }
