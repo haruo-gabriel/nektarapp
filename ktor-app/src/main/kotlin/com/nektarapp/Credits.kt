@@ -1,7 +1,7 @@
 package com.nektarapp
 
 class Credits (
-    val movie_id: Int,
+    val movieId: Int,
     val id: Int,
     val cast: List<People>
 ) {

@@ -5,10 +5,10 @@ class People (
     val birthday: String,
     val deathday: String,
     val id: Int,
-    val known_for_department: String,
+    val knownForDepartment: String,
     val name: String,
-    val place_of_birth: String,
-    val profile_path: String
+    val placeOfBirth: String,
+    val profilePath: String
 ) {
 
 }
