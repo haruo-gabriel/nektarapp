@@ -1,20 +1,35 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>carrossel de teste</title>
+    <title>NektarApp</title>
     <link rel="stylesheet" href="./styles.css">
-  </head>
-  <body>
+</head>
+<body>
+    <nav>
+          <ul>
+              <li><a href="/">Home</a></li>
+              <li><a href="/">Catálogo</a></li>
+              <li><a href="/search">Buscar</a></li>
+              <li><a href="/login">Login</a></li>
+          </ul>
+    </nav>
+    <!--
     <div class="carousel">
       <div class="carouselbox">
-        <!-- imagens buceta -->
+        &lt;!&ndash; imagens buceta &ndash;&gt;
       </div>
       <a class="switchLeft sliderButton"><</a>
       <a class="switchRight sliderButton">></a>
     </div>
+    -->
+
+    <h1>Populares no momento</h1>
+    <div id="carousel" style="display: flex; overflow-x: auto;">
+        <!-- Images will be inserted here -->
+    </div>
 
     <script src="./script.js"></script>
-  </body>
+</body>
 </html>
