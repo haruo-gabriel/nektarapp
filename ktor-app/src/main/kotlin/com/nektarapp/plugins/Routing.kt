@@ -3,7 +3,6 @@ package com.nektarapp.plugins
 import com.nektarapp.data.model.User
 import com.nektarapp.authentication.JwtService
 import com.nektarapp.authentication.hash
-import com.nektarapp.data.model.RegisterRequest
 import com.nektarapp.data.model.SimpleResponse
 import com.nektarapp.repository.repo
 import com.nektarapp.routes.REGISTER_REQUEST
