@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktor-app.iml" filepath="$PROJECT_DIR$/.idea/modules/ktor-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktor-app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ktor-app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ktor-app.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ktor-app.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/nektarapp.iml" filepath="$PROJECT_DIR$/.idea/nektarapp.iml" />
     </modules>
   </component>
