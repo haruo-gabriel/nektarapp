@@ -9,13 +9,12 @@ import org.jetbrains.exposed.sql.ResultRow
 
 class repo {
     suspend fun addUser(user: User) {
+        println(user.email)
         dbQuery {
-            UserTable.insert{
-                UserTable.insert { ut->
-                    ut[UserTable.email] = user.email
-                    ut[UserTable.hashPassword] = user.hashPassword
-                    ut[UserTable.name] = user.name
-                }
+            UserTable.insert { ut->
+                ut[UserTable.email] = user.email
+                ut[UserTable.hashPassword] = user.hashPassword
+                ut[UserTable.name] = user.name
             }
         }
     }

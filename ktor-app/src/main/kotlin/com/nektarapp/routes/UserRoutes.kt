@@ -23,15 +23,14 @@ fun Route.UserRoutes(
     hashFunction: (String) -> String
 ){
     post (REGISTER_REQUEST){
-        val registerRequest = try{
-            call.receive<RegisterRequest>()
+        val user = try{
+            call.receive<User>()
+
         } catch (e: Exception){
             call.respond(HttpStatusCode.BadRequest, SimpleResponse(false, "Missing some fields"))
             return@post
         }
-
         try{
-            val user = User(registerRequest.email, hashFunction(registerRequest.password), registerRequest.name)
             db.addUser(user)
             call.respond(HttpStatusCode.OK, SimpleResponse(true, jwtService.generateToken(user)))
         } catch (e: Exception){
