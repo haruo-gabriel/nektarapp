@@ -3,7 +3,7 @@ package com.nektarapp.data.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class LoginRequest (
+data class FavoritesRequest(
     val email: String,
-    val password: String
+    val id: Int
 )
