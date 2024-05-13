@@ -1,0 +1,38 @@
+.homepage.paragraph-container {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.homepage.backdrop-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+    opacity: 0.2; /* Adjust as needed */
+}
+
+.homepage.paragraphs p {
+    text-align: center;
+    font-size: 30px;
+}
+
+.carousel {
+    width: 100%;
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+}
+
+.carousel img {
+    scroll-snap-align: start;
+    width: 200px;
+}
+
