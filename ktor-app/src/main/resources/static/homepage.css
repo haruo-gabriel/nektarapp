@@ -1,14 +1,15 @@
-.homepage.banner-container {
+
+.banner-container {
     position: relative;
     width: 100%;
-    height: 600px;
+    height: 400px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
-.homepage.backdrop-image {
+.banner-backdrop {
     position: absolute;
     top: 0;
     left: 0;
@@ -19,29 +20,25 @@
     opacity: 0.2; /* Adjust as needed */
 }
 
-.homepage.info-container {
+.banner-info {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
 }
 
-.homepage.title {
+.banner-title {
     margin: 100px;
 }
 
-.homepage.title h1 {
+.banner-title h1 {
     font-size: 90px;
     color: #e94822;
 }
 
-.homepage.paragraphs p {
+.banner-text p {
     text-align: center;
     font-size: 30px;
-}
-
-h2 {
-    margin-left: 40px;
 }
 
 .carousel {

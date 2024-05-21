@@ -56,7 +56,7 @@ function populatePopularMoviesHtml(movies){
     // Populate the background image of the paragraph container with the backdrop of the first movie
     const firstMovie = movies[0];
     const backdropUrl = imagesBaseUrl + '/original' + firstMovie.backdrop_path;
-    const backdropImage = document.querySelector('.homepage.backdrop-image');
+    const backdropImage = document.querySelector('.banner-backdrop');
     backdropImage.src = backdropUrl;
 
     // Populates the carousel with the posters of popular movies
