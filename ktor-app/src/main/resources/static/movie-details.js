@@ -5,6 +5,8 @@ window.onload = function() {
     const currentMovie = JSON.parse(localStorage.getItem('currentMovie'));
     // Populate the page with the movie details
     populateMovieDetails(currentMovie).catch(error => console.error(error));
+    // Populate the page with the reviews for the current movie
+    populateReviews(currentMovie.id).catch(error => console.error(error));
 }
 
 async function populateMovieDetails(movie) {
@@ -35,4 +37,20 @@ async function populateMovieDetails(movie) {
     // Insert the new HTML into a specific container in the index.html page
     const container = document.querySelector('.movie-details.all-container');
     container.innerHTML = html;
+}
+
+async function populateReviews(movieId) {
+    // Fetch the reviews for the current movie
+    const response = await fetch(`/api/movies/${movieId}/reviews`);
+    const reviews = await response.json();
+
+    // Create the HTML template for the reviews
+    let reviewsHTML = '';
+    reviews.forEach(review => {
+        reviewsHTML += generateReviewHTML(review.username, review.creationDate, review.reviewText);
+    });
+
+    // Insert the new HTML into a specific container in the index.html page
+    const container = document.querySelector('.movie-details.reviews-container');
+    container.innerHTML = reviewsHTML;
 }
