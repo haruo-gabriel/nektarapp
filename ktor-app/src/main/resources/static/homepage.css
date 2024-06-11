@@ -1,3 +1,6 @@
+h2 {
+    margin-left: 40px;
+}
 
 .banner-container {
     position: relative;
@@ -7,6 +10,10 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.banner-form {
+   width: 100%;
 }
 
 .banner-backdrop {
@@ -52,4 +59,5 @@
     scroll-snap-align: start;
     width: 200px;
 }
+
 

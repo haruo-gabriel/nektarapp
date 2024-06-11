@@ -3,12 +3,10 @@ function generateReviewHTML(username, creationDate, reviewText) {
     const formattedDate = new Date(creationDate).toLocaleDateString();
 
     // Create the HTML template for the review
-    const reviewHTML = `
+    return `
         <div class="review">
             <b class="review-title">${username} em ${formattedDate}</b>
             <p class="review-text">${reviewText}</p>
         </div>
     `;
-
-    return reviewHTML;
 }

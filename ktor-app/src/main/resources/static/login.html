@@ -4,34 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="common.css">
     <link rel="stylesheet" href="./login.css">
 </head>
 <body>
+    <div id="navbar-container"></div>
 
-<div id="navbar-container"></div>
-
-<div class="main-content">
-    <div class="login-form-container">
-        <h2>Login</h2>
-        <form id="loginForm">
-            <label for="username">Usuário:</label><br>
-            <input type="text" id="username" name="username" required><br>
-            <label for="password">Senha:</label><br>
-            <input type="password" id="password" name="password" required><br>
-            <input type="submit" value="Login">
-        </form>
-        <div class="warning-container">
-            <p>Ainda não criou uma conta? <a href="./logon.html">Crie uma conta</a></p>
+    <div class="main-content">
+        <div class="login-form-container">
+            <h2>Login</h2>
+            <form id="loginForm">
+                <label for="username">Usuário:</label><br>
+                <input type="text" id="username" name="username" required><br>
+                <label for="password">Senha:</label><br>
+                <input type="password" id="password" name="password" required><br>
+                <input type="submit" value="Login">
+            </form>
+            <div class="warning-container">
+                <p>Ainda não criou uma conta? <a href="./logon.html">Crie uma conta</a></p>
+            </div>
         </div>
     </div>
-</div>
 
+    <div id="footer-container"></div>
 
-<div id="footer-container"></div>
-
-<script src="utils.js"></script>
-<script type="module" src="authentication.js"></script>
+    <script type="module" src="login.js"></script>
 
 </body>
 </html>

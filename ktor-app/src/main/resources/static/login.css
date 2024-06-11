@@ -9,6 +9,7 @@
 
 .login-form-container h2 {
     color: #272727;
+    margin-left: 0;
 }
 
 .login-form-container label {
