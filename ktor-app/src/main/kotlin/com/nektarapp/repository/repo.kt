@@ -1,6 +1,8 @@
 package com.nektarapp.repository
 
+import com.nektarapp.data.model.Review
 import com.nektarapp.data.model.User
+import com.nektarapp.data.table.ReviewTable
 import com.nektarapp.data.table.UserTable
 import org.jetbrains.exposed.sql.insert
 import com.nektarapp.repository.DatabaseFactory.dbQuery
@@ -19,10 +21,42 @@ class repo {
             }
         }
     }
+
+    suspend fun addReview(review: Review) {
+        dbQuery {
+            ReviewTable.insert { rt->
+                rt[ReviewTable.email] = review.email
+                rt[ReviewTable.movieid] = review.movieid
+                rt[ReviewTable.star] = review.star
+                rt[ReviewTable.text] = review.text
+            }
+        }
+    }
+
+
     suspend fun findUserByEmail(email: String) = dbQuery {
         UserTable.select {UserTable.email.eq(email)}
             .map{rowToUser(it)}
             .singleOrNull()
+    }
+
+    //pega todas as reviews de um user
+    suspend fun findAllUserReviews(email: String): List<Review> = dbQuery {
+        ReviewTable.select { ReviewTable.email.eq(email) }
+            .map { rowToReview(it) }
+            .filterNotNull()
+    }
+
+    private fun rowToReview(row: ResultRow?): Review? {
+        if (row == null) {
+            return null
+        }
+        return Review(
+            email = row[ReviewTable.email],
+            movieid = row[ReviewTable.movieid],
+            star = row[ReviewTable.star]!!,
+            text = row[ReviewTable.text]!!
+        )
     }
 
     private fun rowToUser(row:ResultRow?): User? {
@@ -44,6 +78,7 @@ class repo {
     }
 
     suspend fun addFavorite(email: String, newFavorites: List<Int>) {
+        println("addFavorite: $email, $newFavorites")
         dbQuery {
             UserTable.update({ UserTable.email.eq(email)}) {
                 it[UserTable.favorites] = newFavorites.joinToString { it.toString() }

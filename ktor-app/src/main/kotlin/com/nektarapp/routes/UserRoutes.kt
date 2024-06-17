@@ -8,7 +8,6 @@ import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
-import kotlinx.serialization.Serializable
 
 const val API_VERSION = "/v1"
 const val USERS = "$API_VERSION/users"
@@ -79,8 +78,9 @@ fun Route.UserRoutes(
         try{
             val user = db.findUserByEmail(favoritesRequest.email)
             if (user != null) {
-                user.favorites.plus(favoritesRequest.id)
-                db.addFavorite(favoritesRequest.email, user.favorites)
+                //adiciona o favorito
+                val novaLista = user.favorites + favoritesRequest.id
+                db.addFavorite(favoritesRequest.email, novaLista)
                 call.respond(HttpStatusCode.OK, SimpleResponse(true, "Favorite added"))
             } else {
                 call.respond(HttpStatusCode.OK, SimpleResponse(true, "Wrong email"))
@@ -89,7 +89,20 @@ fun Route.UserRoutes(
             call.respond(HttpStatusCode.BadRequest, SimpleResponse(false, "Something went wrong"))
             return@post
         }
+    }
 
+    get("/user/{email}") {
+        val email = call.parameters["email"]
+        if (email != null) {
+            val user = db.findUserByEmail(email)
+            if (user != null) {
+                call.respond(user)
+            } else {
+                call.respondText("User not found", status = HttpStatusCode.NotFound)
+            }
+        } else {
+            call.respondText("Missing or malformed email", status = HttpStatusCode.BadRequest)
+        }
     }
 
 }

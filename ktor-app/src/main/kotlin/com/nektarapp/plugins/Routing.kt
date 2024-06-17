@@ -6,6 +6,7 @@ import com.nektarapp.authentication.hash
 import com.nektarapp.data.model.SimpleResponse
 import com.nektarapp.repository.repo
 import com.nektarapp.routes.REGISTER_REQUEST
+import com.nektarapp.routes.ReviewRoutes
 import com.nektarapp.routes.UserRoutes
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -23,20 +24,7 @@ fun Application.configureRouting(){
         val hashFunction = { s: String -> hash(s) }
 
         UserRoutes(db, JwtService(), hashFunction)
-
-        get("/token") {
-            val email = call.request.queryParameters["email"]!!
-            val password = call.request.queryParameters["password"]!!
-            val username = call.request.queryParameters["username"]!!
-
-            val user = User(email,hash(password),username)
-
-            val token = jwtService.generateToken(user)
-
-
-            call.respond(token)
-        }
-
+        ReviewRoutes(db)
 
     }
 }
