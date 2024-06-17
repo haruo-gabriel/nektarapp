@@ -1,19 +1,24 @@
-import { apiUrl, token, imagesBaseUrl } from "./constants.js";
+import { apiUrl, imagesBaseUrl, GetOptions } from "./constants.js";
+import { initializeCommonHtml } from "./common.js";
 
+initializeCommonHtml();
 loadHomePage().catch(error => console.error(error));
 
 async function loadHomePage() {
-    const popularMovies = await fetchPopularMovies();
-    populatePopularMoviesHtml(popularMovies);
+    const popularMovies = await fetchMovies('popular');
+    const upcomingMovies = await fetchMovies('upcoming');
+    populateBackdropImage(popularMovies);
+    populateCarousel(popularMovies, 'popular-movies');
+    populateCarousel(upcomingMovies, 'upcoming-movies');
 }
 
-async function fetchPopularMovies(){
-    const url = `${apiUrl}/movie/popular?language=pt-br&page=1`;
+async function fetchMovies(id){
+    const url = `${apiUrl}/movie/${id}?language=pt-br&page=1`;
 
     // Check if the Cache API is available
     if ('caches' in window) {
         // Define a name for your cache
-        const cacheName = 'popular-movies-cache';
+        const cacheName = `${id}-movies-cache`;
         // Open the cache
         const cache = await caches.open(cacheName);
         // Check if the data is in the cache
@@ -25,23 +30,15 @@ async function fetchPopularMovies(){
         }
     }
 
-    const options = {
-        method: 'GET',
-        headers: {
-            accept: 'application/json',
-            Authorization: `Bearer ${token}`
-        }
-    };
-
-    const response = await fetch(url, options);
-
+    // Fetch the data from the API
+    const response= await fetch(url, GetOptions);
     // Clone the response
     const responseClone = response.clone();
 
     // Check if the Cache API is available
     if ('caches' in window) {
         // Define a name for your cache
-        const cacheName = 'popular-movies-cache';
+        const cacheName = `${id}-movies-cache`;
         // Open the cache
         const cache = await caches.open(cacheName);
         // Add the response to the cache
@@ -52,16 +49,19 @@ async function fetchPopularMovies(){
     return data.results;
 }
 
-function populatePopularMoviesHtml(movies){
-    // Populate the background image of the paragraph container with the backdrop of the first movie
-    const firstMovie = movies[0];
-    const backdropUrl = imagesBaseUrl + '/original' + firstMovie.backdrop_path;
-    const backdropImage = document.querySelector('.homepage.backdrop-image');
+function populateBackdropImage(movies){
+    // Populate the background image of the paragraph container with the backdrop of a random movie from the list
+    const firstMovies = movies.slice(0, 10);
+    const randomIndex = Math.floor(Math.random() * firstMovies.length);
+    const randomMovie = firstMovies[randomIndex];
+    const backdropUrl = imagesBaseUrl + '/original' + randomMovie.backdrop_path;
+    const backdropImage = document.querySelector('.banner-backdrop');
     backdropImage.src = backdropUrl;
+}
 
-    // Populates the carousel with the posters of popular movies
-    const carousel = document.getElementById('popular-movies');
-    carousel.innerHTML = ''; // Clear the carousel before populating it
+function populateCarousel(movies, carouselId){
+    const carousel = document.getElementById(carouselId);
+    carousel.innerHTML = '';
     movies.forEach(movie => {
         const img = document.createElement('img');
         img.src = imagesBaseUrl + '/w200' + movie.poster_path;
