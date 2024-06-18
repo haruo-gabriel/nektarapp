@@ -7,7 +7,7 @@ loadHomePage().catch(error => console.error(error));
 async function loadHomePage() {
     const popularMovies = await fetchMovies('popular');
     const upcomingMovies = await fetchMovies('upcoming');
-    populateBackdropImage(popularMovies);
+    populateBannerImage(popularMovies);
     populateCarousel(popularMovies, 'popular-movies');
     populateCarousel(upcomingMovies, 'upcoming-movies');
 }
@@ -49,14 +49,12 @@ async function fetchMovies(id){
     return data.results;
 }
 
-function populateBackdropImage(movies){
-    // Populate the background image of the paragraph container with the backdrop of a random movie from the list
-    const firstMovies = movies.slice(0, 10);
-    const randomIndex = Math.floor(Math.random() * firstMovies.length);
-    const randomMovie = firstMovies[randomIndex];
+function populateBannerImage(movies){
+    const randomIndex = Math.floor(Math.random() * movies.length);
+    const randomMovie = movies[randomIndex];
     const backdropUrl = imagesBaseUrl + '/original' + randomMovie.backdrop_path;
-    const backdropImage = document.querySelector('.banner-backdrop');
-    backdropImage.src = backdropUrl;
+    const bannerImage = document.getElementById('banner-backdrop');
+    bannerImage.src = backdropUrl;
 }
 
 function populateCarousel(movies, carouselId){
