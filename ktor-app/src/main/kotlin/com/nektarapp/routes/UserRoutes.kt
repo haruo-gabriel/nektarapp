@@ -91,6 +91,20 @@ fun Route.UserRoutes(
         }
     }
 
+    delete("/userDelete/{email}"){
+        val email = call.parameters["email"]
+        if (email != null){
+            try{
+                db.deleteUser(email)
+                call.respondText("User deleted successfully", status = HttpStatusCode.OK)
+            } catch (e: Exception){
+                call.respond(HttpStatusCode.BadRequest, SimpleResponse(false, "Something went wrong"))
+            }
+        } else {
+            call.respond(HttpStatusCode.BadRequest, SimpleResponse(false, "Something went wrong"))
+        }
+    }
+
     get("/user/{email}") {
         val email = call.parameters["email"]
         if (email != null) {

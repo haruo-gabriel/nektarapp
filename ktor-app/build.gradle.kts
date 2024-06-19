@@ -29,6 +29,11 @@ repositories {
 }
 
 dependencies {
+    testImplementation(kotlin("test"))
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.0")
+    //testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlin_version")
+
     implementation("io.ktor:ktor-server-content-negotiation-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktor_version")
@@ -50,12 +55,16 @@ dependencies {
     implementation("com.auth0:java-jwt:3.18.1")
 
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+    //testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 
     implementation("org.jetbrains.kotlinx:kotlinx-html-jvm")
     implementation("com.github.kittinunf.fuel:fuel:2.3.1")
     implementation("org.json:json:20210307")
     implementation("io.ktor:ktor-server-html-builder-jvm")
     testImplementation("io.ktor:ktor-server-tests-jvm")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+    //testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+}
+
+tasks.test {
+    useJUnitPlatform()
 }

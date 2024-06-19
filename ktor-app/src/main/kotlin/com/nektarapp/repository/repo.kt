@@ -4,11 +4,9 @@ import com.nektarapp.data.model.Review
 import com.nektarapp.data.model.User
 import com.nektarapp.data.table.ReviewTable
 import com.nektarapp.data.table.UserTable
-import org.jetbrains.exposed.sql.insert
 import com.nektarapp.repository.DatabaseFactory.dbQuery
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.update
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 
 class repo {
     suspend fun addUser(user: User) {
@@ -78,11 +76,24 @@ class repo {
     }
 
     suspend fun addFavorite(email: String, newFavorites: List<Int>) {
-        println("addFavorite: $email, $newFavorites")
+        //println("addFavorite: $email, $newFavorites")
         dbQuery {
             UserTable.update({ UserTable.email.eq(email)}) {
                 it[UserTable.favorites] = newFavorites.joinToString { it.toString() }
             }
         }
+    }
+
+    suspend fun deleteReview(email: String, movieid: Int, star: Int, text: String): Int = dbQuery {
+        ReviewTable.deleteWhere {
+            (ReviewTable.email eq email) and
+                    (ReviewTable.movieid eq movieid) and
+                    (ReviewTable.star eq star) and
+                    (ReviewTable.text eq text)
+        }
+    }
+
+    suspend fun deleteUser(email: String): Int = dbQuery {
+        UserTable.deleteWhere { UserTable.email eq email }
     }
 }
