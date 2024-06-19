@@ -13,8 +13,8 @@ const val API_VERSION = "/v1"
 const val USERS = "$API_VERSION/users"
 const val REGISTER_REQUEST = "$USERS/register"
 const val LOGIN_REQUEST = "$USERS/login"
-const val ADD_FAVORITE = "$USERS/addFavorite"
-
+const val FAVORITES = "$USERS/favorites"
+const val WATCHLIST = "$USERS/watchlist"
 
 
 fun Route.UserRoutes(
@@ -22,6 +22,36 @@ fun Route.UserRoutes(
     jwtService: JwtService,
     hashFunction: (String) -> String
 ){
+    post (FAVORITES){
+        val favoritesRequest = try{
+            call.receive<ListRequest>()
+        } catch (e: Exception){
+            call.respond(HttpStatusCode.BadRequest, SimpleResponse(false, "Missing some fields"))
+            return@post
+        }
+        try{
+            db.addFavorite(favoritesRequest.email, favoritesRequest.id)
+            call.respond(HttpStatusCode.OK, SimpleResponse(true, "Movie added to favorites"))
+        } catch (e: Exception){
+            call.respond(HttpStatusCode.Conflict, SimpleResponse(false, e.message ?: "Some error occurred"))
+        }
+    }
+
+    post (WATCHLIST){
+        val watchlistRequest = try{
+            call.receive<ListRequest>()
+        } catch (e: Exception){
+            call.respond(HttpStatusCode.BadRequest, SimpleResponse(false, "Missing some fields"))
+            return@post
+        }
+        try{
+            db.addWatchlist(watchlistRequest.email, watchlistRequest.id)
+            call.respond(HttpStatusCode.OK, SimpleResponse(true, "Movie added to watchlist"))
+        } catch (e: Exception){
+            call.respond(HttpStatusCode.Conflict, SimpleResponse(false, e.message ?: "Some error occurred"))
+        }
+    }
+
     post (REGISTER_REQUEST){
         val registerRequest = try{
             call.receive<RegisterRequest>()
@@ -67,29 +97,6 @@ fun Route.UserRoutes(
             call.respond(HttpStatusCode.Conflict, SimpleResponse(false, e.message ?: "Some error occurred"))
         }
     }
-    post(ADD_FAVORITE){
-        val favoritesRequest = try{
-            call.receive<FavoritesRequest>()
-        } catch (e: Exception){
-            call.respond(HttpStatusCode.BadRequest, SimpleResponse(false, "Missing some fields"))
-            return@post
-        }
-
-        try{
-            val user = db.findUserByEmail(favoritesRequest.email)
-            if (user != null) {
-                //adiciona o favorito
-                val novaLista = user.favorites + favoritesRequest.id
-                db.addFavorite(favoritesRequest.email, novaLista)
-                call.respond(HttpStatusCode.OK, SimpleResponse(true, "Favorite added"))
-            } else {
-                call.respond(HttpStatusCode.OK, SimpleResponse(true, "Wrong email"))
-            }
-        } catch (e: Exception){
-            call.respond(HttpStatusCode.BadRequest, SimpleResponse(false, "Something went wrong"))
-            return@post
-        }
-    }
 
     delete("/userDelete/{email}"){
         val email = call.parameters["email"]
@@ -111,6 +118,34 @@ fun Route.UserRoutes(
             val user = db.findUserByEmail(email)
             if (user != null) {
                 call.respond(user)
+            } else {
+                call.respondText("User not found", status = HttpStatusCode.NotFound)
+            }
+        } else {
+            call.respondText("Missing or malformed email", status = HttpStatusCode.BadRequest)
+        }
+    }
+
+    get("/user/{email}/favorites") {
+        val email = call.parameters["email"]
+        if (email != null) {
+            val favorites = db.findAllUserFavorites(email)
+            if (favorites.isNotEmpty()) {
+                call.respond(favorites)
+            } else {
+                call.respondText("User not found", status = HttpStatusCode.NotFound)
+            }
+        } else {
+            call.respondText("Missing or malformed email", status = HttpStatusCode.BadRequest)
+        }
+    }
+
+    get("/user/{email}/watchlist") {
+        val email = call.parameters["email"]
+        if (email != null) {
+            val watchlist = db.findAllUserWatchlist(email)
+            if (watchlist.isNotEmpty()) {
+                call.respond(watchlist)
             } else {
                 call.respondText("User not found", status = HttpStatusCode.NotFound)
             }

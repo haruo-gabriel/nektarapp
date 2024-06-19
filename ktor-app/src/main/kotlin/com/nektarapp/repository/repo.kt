@@ -2,8 +2,10 @@ package com.nektarapp.repository
 
 import com.nektarapp.data.model.Review
 import com.nektarapp.data.model.User
+import com.nektarapp.data.table.FavoritesTable
 import com.nektarapp.data.table.ReviewTable
 import com.nektarapp.data.table.UserTable
+import com.nektarapp.data.table.WatchlistTable
 import com.nektarapp.repository.DatabaseFactory.dbQuery
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -15,7 +17,6 @@ class repo {
                 ut[UserTable.email] = user.email
                 ut[UserTable.hashPassword] = user.hashPassword
                 ut[UserTable.name] = user.name
-                ut[UserTable.favorites] = user.favorites.joinToString { it.toString() }
             }
         }
     }
@@ -31,6 +32,23 @@ class repo {
         }
     }
 
+    suspend fun addFavorite(email: String, movieid: Int) {
+        dbQuery {
+            FavoritesTable.insert { ft->
+                ft[FavoritesTable.email] = email
+                ft[FavoritesTable.movieid] = movieid
+            }
+        }
+    }
+
+    suspend fun addWatchlist(email: String, movieid: Int) {
+        dbQuery {
+            WatchlistTable.insert { wt->
+                wt[WatchlistTable.email] = email
+                wt[WatchlistTable.movieid] = movieid
+            }
+        }
+    }
 
     suspend fun findUserByEmail(email: String) = dbQuery {
         UserTable.select {UserTable.email.eq(email)}
@@ -43,6 +61,16 @@ class repo {
         ReviewTable.select { ReviewTable.email.eq(email) }
             .map { rowToReview(it) }
             .filterNotNull()
+    }
+    //pega todos os filmes favoritos de um user
+    suspend fun findAllUserFavorites(email: String): List<Int> = dbQuery {
+        FavoritesTable.select { FavoritesTable.email.eq(email) }
+            .map { it[FavoritesTable.movieid] }
+    }
+    //pega todos os filmes da watchlist de um user
+    suspend fun findAllUserWatchlist(email: String): List<Int> = dbQuery {
+        WatchlistTable.select { WatchlistTable.email.eq(email) }
+            .map { it[WatchlistTable.movieid] }
     }
 
     private fun rowToReview(row: ResultRow?): Review? {
@@ -61,27 +89,11 @@ class repo {
         if (row == null) {
             return null
         }
-        val favoritesString = row[UserTable.favorites]
-        val favoritesList = if (!favoritesString.isNullOrEmpty()) {
-            favoritesString.split(",").map { it.toInt() }
-        } else {
-            emptyList()
-        }
         return User(
             email = row[UserTable.email],
             hashPassword = row[UserTable.hashPassword],
-            name = row[UserTable.name],
-            favorites = favoritesList
+            name = row[UserTable.name]
         )
-    }
-
-    suspend fun addFavorite(email: String, newFavorites: List<Int>) {
-        //println("addFavorite: $email, $newFavorites")
-        dbQuery {
-            UserTable.update({ UserTable.email.eq(email)}) {
-                it[UserTable.favorites] = newFavorites.joinToString { it.toString() }
-            }
-        }
     }
 
     suspend fun deleteReview(email: String, movieid: Int, star: Int, text: String): Int = dbQuery {
