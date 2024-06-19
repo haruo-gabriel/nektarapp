@@ -33,6 +33,14 @@ class repo {
     }
 
     suspend fun addFavorite(email: String, movieid: Int) {
+        //conferir se o filme já está na lista de favoritos
+        val fav = dbQuery {
+            FavoritesTable.select { (FavoritesTable.email eq email) and (FavoritesTable.movieid eq movieid) }
+                .map { it[FavoritesTable.movieid] }
+        }
+        if (movieid in fav) {
+            return
+        }
         dbQuery {
             FavoritesTable.insert { ft->
                 ft[FavoritesTable.email] = email
@@ -42,6 +50,14 @@ class repo {
     }
 
     suspend fun addWatchlist(email: String, movieid: Int) {
+        //conferir se o filme já está na watchlist
+        val watch = dbQuery {
+            WatchlistTable.select { (WatchlistTable.email eq email) and (WatchlistTable.movieid eq movieid) }
+                .map { it[WatchlistTable.movieid] }
+        }
+        if (movieid in watch) {
+            return
+        }
         dbQuery {
             WatchlistTable.insert { wt->
                 wt[WatchlistTable.email] = email
@@ -96,12 +112,26 @@ class repo {
         )
     }
 
-    suspend fun deleteReview(email: String, movieid: Int, star: Int, text: String): Int = dbQuery {
+    suspend fun deleteReview(review: Review): Int = dbQuery {
         ReviewTable.deleteWhere {
             (ReviewTable.email eq email) and
                     (ReviewTable.movieid eq movieid) and
                     (ReviewTable.star eq star) and
                     (ReviewTable.text eq text)
+        }
+    }
+
+    suspend fun deleteFavorite(email: String, movieid: Int): Int = dbQuery {
+        FavoritesTable.deleteWhere {
+            (FavoritesTable.email eq email) and
+                    (FavoritesTable.movieid eq movieid)
+        }
+    }
+
+    suspend fun deleteWatchlist(email: String, movieid: Int): Int = dbQuery {
+        WatchlistTable.deleteWhere {
+            (WatchlistTable.email eq email) and
+                    (WatchlistTable.movieid eq movieid)
         }
     }
 

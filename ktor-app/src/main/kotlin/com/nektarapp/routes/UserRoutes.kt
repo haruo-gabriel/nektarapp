@@ -112,6 +112,36 @@ fun Route.UserRoutes(
         }
     }
 
+    delete("/favoritesDelete/{email}/{id}"){
+        val email = call.parameters["email"]
+        val id = call.parameters["id"]
+        if (email != null && id != null){
+            try{
+                db.deleteFavorite(email, id.toInt())
+                call.respondText("Favorite deleted successfully", status = HttpStatusCode.OK)
+            } catch (e: Exception){
+                call.respond(HttpStatusCode.BadRequest, SimpleResponse(false, "Something went wrong"))
+            }
+        } else {
+            call.respond(HttpStatusCode.BadRequest, SimpleResponse(false, "Something went wrong"))
+        }
+    }
+
+    delete("/watchlistDelete/{email}/{id}"){
+        val email = call.parameters["email"]
+        val id = call.parameters["id"]
+        if (email != null && id != null){
+            try{
+                db.deleteWatchlist(email, id.toInt())
+                call.respondText("Watchlist deleted successfully", status = HttpStatusCode.OK)
+            } catch (e: Exception){
+                call.respond(HttpStatusCode.BadRequest, SimpleResponse(false, "Something went wrong"))
+            }
+        } else {
+            call.respond(HttpStatusCode.BadRequest, SimpleResponse(false, "Something went wrong"))
+        }
+    }
+
     get("/user/{email}") {
         val email = call.parameters["email"]
         if (email != null) {
