@@ -1,44 +1,36 @@
-h2 {
-    margin-left: 40px;
-}
-
 .banner-container {
     position: relative;
-    width: 100%;
+    width: 100vw;
     height: 400px;
+    margin: 0;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
 }
 
-.banner-form {
-   width: 100%;
-}
-
-.banner-backdrop {
+#banner-backdrop {
     position: absolute;
-    top: 0;
-    left: 0;
+    z-index: -1;
     width: 100%;
     height: 100%;
+    margin: 0;
     object-fit: cover;
-    z-index: -1;
+    object-position: center;
     opacity: 0.2; /* Adjust as needed */
 }
 
 .banner-info {
+    z-index: 0;
+    margin: inherit;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
 }
 
-.banner-title {
+#banner-title {
     margin: 100px;
-}
-
-.banner-title h1 {
     font-size: 90px;
     color: #e94822;
 }
@@ -47,17 +39,3 @@ h2 {
     text-align: center;
     font-size: 30px;
 }
-
-.carousel {
-    width: 100%;
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-}
-
-.carousel img {
-    scroll-snap-align: start;
-    width: 200px;
-}
-
-

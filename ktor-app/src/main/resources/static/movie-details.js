@@ -5,13 +5,15 @@ window.onload = async function() {
     // Initialize the page
     initializeCommonHtml();
     // Retrieve the current movie's data from localStorage
-    const currentMovieData = localStorage.getItem('currentMovie');
+    const currentMovieData = localStorage.getItem('currentMovie')
     if (currentMovieData) {
         const currentMovie = JSON.parse(currentMovieData);
         console.log(currentMovie);
+        // Set the page title to the movie's title
+        document.title = currentMovie.title;
         // Populate the page with the movie details
         populateMovieDetails(currentMovie).catch(error => console.error(error));
-        // Populate the page with the reviews for the current movie
+        // Populate the page with the reviews for the movie
         populateReviews(currentMovie.id).catch(error => console.error(error));
     } else {
         console.error('No movie data found in localStorage');
@@ -26,23 +28,23 @@ async function populateMovieDetails(movie) {
 
     // Create the HTML template
     let html = `
-        <div class="backdrop-image">
-            <img id="backgroung-image" src="${imagesBaseUrl}/original${movie.backdrop_path}" alt="${movie.title}">
-        </div>
+        <img id="background-image" src="${imagesBaseUrl}/original${movie.backdrop_path}" alt="${movie.title}">
         <div class="info-container">
             <img id="poster-image" src="${imagesBaseUrl}/w300${movie.poster_path}" alt="${movie.title}">
             <div class="text-container">
-                <h1>${movie.title}</h1>
-                <p>Data de lançamento: ${formattedReleaseDate}</p>
-                <p>Média dos votos: ${movie.vote_average}</p>
+                <h1 id="movie-title">${movie.title}</h1>
+                <div class="general-info">
+                    <p>Data de lançamento: ${formattedReleaseDate}</p>
+                    <p>Média dos votos (TMDB): ${movie.vote_average} (${movie.vote_count} votos)</p>
+                </div>
                 <h2>Sinopse</h2>
                 <p>${movie.overview}</p>
             </div>
         </div>
     `;
 
-    // Insert the new HTML into a specific container in the index.html page
-    const container = document.querySelector('.movie-details.all-container');
+    // Insert the new HTML into a specific container in the homepage.html page
+    const container = document.querySelector('.movie-details-container');
     container.innerHTML = html;
 }
 
@@ -57,7 +59,7 @@ async function populateReviews(movieId) {
         reviewsHTML += generateReviewHTML(review.username, review.creationDate, review.reviewText);
     });
 
-    // Insert the new HTML into a specific container in the index.html page
-    const container = document.querySelector('.movie-details.reviews-container');
+    // Insert the new HTML into a specific container in the homepage.html page
+    const container = document.querySelector('.reviews-container');
     container.innerHTML = reviewsHTML;
 }

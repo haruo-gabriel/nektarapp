@@ -46,9 +46,18 @@
     opacity: 0.8;
 }
 
-.warning-container {
+.redirect-container {
     display: flex;
     align-items: center;
     justify-content: center;
     color: #272727;
+}
+
+.error-container {
+    display: none;
+    padding: 4px;
+    background-color: #e94822;
+    border-radius: 12px;
+    /*align-items: center;*/
+    justify-content: center;
 }

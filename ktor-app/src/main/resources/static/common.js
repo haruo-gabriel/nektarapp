@@ -13,15 +13,17 @@ export function initializeCommonHtml() {
 function generateNavbar() {
     return `
     <nav>
-        <ul>
-            <li id="logo-name"><b><a href="index.html">NektarApp</a></b></li>
-            <li><a href="profile.html">Perfil</a></li>
-            <li><a href="login.html">Entrar</a></li>
-        </ul>
-        <form action="search.html" method="get">
-            <input type="search" name="q" placeholder="Pesquisar...">
-            <input type="submit" value="Ir">
-        </form>
+        <div id="navbar-left">
+            <b><a id="logo-name" href="homepage.html">NektarApp</a></b>
+        </div>
+        <div id="navbar-right">
+            <a href="login.html">Entrar</a>
+            <a href="profile.html">Perfil</a>
+            <form action="search.html" method="get">
+                <input type="search" name="q" placeholder="Pesquisar...">
+                <input type="submit" value="Ir">
+            </form>
+        </div>
     </nav>
     `;
 }
@@ -37,4 +39,20 @@ function generateFooter() {
 export function formatDate(dateString) {
     const date = new Date(dateString);
     return date.toLocaleDateString('pt-BR');
+}
+
+export function validateEmail(email) {
+    // A more comprehensive email validation regex
+    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return regex.test(email);
+}
+
+export function validateUsername(username) {
+    // Check if the username is not empty and has at least 3 characters
+    return username.trim().length >= 3;
+}
+
+export function validatePassword(password) {
+    // Check if the password is not empty and has at least 8 characters
+    return password.trim().length >= 8;
 }
