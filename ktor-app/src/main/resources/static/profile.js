@@ -6,6 +6,7 @@ window.onload = function() {
     setUsernameHTML();
 };
 
+
 function setPageTitle() {
     // document.title = localStorage.getItem('userId');
     document.title = 'usuarioTeste'
@@ -13,6 +14,6 @@ function setPageTitle() {
 
 function setUsernameHTML() {
     const usernameHTML = document.getElementById('username');
-    // usernameHTML.innerText = '@' + localStorage.getItem('userId');
-    usernameHTML.innerText = '@' + 'usuarioTeste';
+    usernameHTML.innerText = '@' + localStorage.getItem('userName');
+    // usernameHTML.innerText = '@' + 'usuarioTeste';
 }

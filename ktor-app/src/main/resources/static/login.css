@@ -46,6 +46,8 @@
     opacity: 0.8;
 }
 
+/*REDIRECT*/
+
 .redirect-container {
     display: flex;
     align-items: center;
@@ -53,11 +55,15 @@
     color: #272727;
 }
 
+/*ERROR*/
+
 .error-container {
     display: none;
     padding: 4px;
     background-color: #e94822;
     border-radius: 12px;
-    /*align-items: center;*/
-    justify-content: center;
+}
+
+#errorMessage {
+    text-align: center;
 }

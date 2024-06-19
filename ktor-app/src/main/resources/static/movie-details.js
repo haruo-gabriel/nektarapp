@@ -1,4 +1,4 @@
-import { imagesBaseUrl } from "./constants.js";
+import { imagesBaseUrl } from "./common.js";
 import { initializeCommonHtml } from "./common.js";
 
 window.onload = async function() {

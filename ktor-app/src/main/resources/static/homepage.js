@@ -1,8 +1,11 @@
-import { apiUrl, imagesBaseUrl, GetOptions } from "./constants.js";
+import { apiUrl, imagesBaseUrl, TmdbGetOptions } from "./common.js";
 import { initializeCommonHtml } from "./common.js";
 
 initializeCommonHtml();
 loadHomePage().catch(error => console.error(error));
+
+window.onload = function() {
+}
 
 async function loadHomePage() {
     const popularMovies = await fetchMovies('popular');
@@ -31,7 +34,7 @@ async function fetchMovies(id){
     }
 
     // Fetch the data from the API
-    const response= await fetch(url, GetOptions);
+    const response= await fetch(url, TmdbGetOptions);
     // Clone the response
     const responseClone = response.clone();
 

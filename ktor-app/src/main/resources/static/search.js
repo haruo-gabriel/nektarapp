@@ -1,7 +1,5 @@
-import {apiUrl, GetOptions, imagesBaseUrl} from "./constants.js";
+import {apiUrl, TmdbGetOptions, imagesBaseUrl, queryOptions} from "./common.js";
 import {initializeCommonHtml} from "./common.js";
-
-console.log('Search page loaded');
 
 window.onload = function() {
     initializeCommonHtml();
@@ -19,16 +17,25 @@ window.onload = function() {
         .then(data => {
             displaySearchResults(data.results);
         })
-        .catch(err => console.error(err));
+        .catch(error => console.error(error));
 };
 
 function fetchSearchResults(query) {
     // Make a fetch request to the TMDB API with the search query
-    return fetch(`${apiUrl}/search/movie?query=${query}&include_adult=false&language=pt-BR&page=1`, GetOptions)
-        .then(response => response.json())
+    return fetch(`${apiUrl}/search/movie?query=${query}${queryOptions}&page=1`, TmdbGetOptions)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(response => {
             console.log(response);
             return response;
+        })
+        .catch(error => {
+            console.error('An error occurred while fetching the search results:', error);
+            throw error; // Re-throw the error to allow further chaining
         });
 }
 
@@ -70,4 +77,12 @@ function generateResultContainer(result) {
         </div>
     </a>
     `;
+}
+
+export async function getMovieIdByName(movieName) {
+    fetchSearchResults(movieName)
+        .then(data => {
+            return data.results[0].id;
+        })
+        .catch(error => console.error(error));
 }
