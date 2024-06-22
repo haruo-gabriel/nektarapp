@@ -6,10 +6,8 @@ window.onload = function() {
     setUsernameHTML();
 };
 
-
 function setPageTitle() {
-    // document.title = localStorage.getItem('userId');
-    document.title = 'usuarioTeste'
+    document.title = localStorage.getItem('userName') + ' - NektarApp';
 }
 
 function setUsernameHTML() {

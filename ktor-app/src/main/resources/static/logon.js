@@ -1,74 +1,46 @@
-import {initializeCommonHtml, validateEmail, validateUsername, validatePassword} from "./common.js";
+import {initializeCommonHtml} from "./common.js";
+import {registerUser, validateEmail, validateUsername, validatePassword} from "./user.js";
 
 window.onload = function() {
     initializeCommonHtml();
 
     // Add an event listener to the logon form
-    document.getElementById('logonForm').addEventListener('submit', function(event) {
-        event.preventDefault();
+    document.getElementById('logonForm').addEventListener('submit',
+        async (event) => {
+            event.preventDefault();
 
-        const email = document.getElementById('email').value;
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-
-        handleLogon(email, username, password);
-    });
+            const email = document.getElementById('email').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            await handleLogon(email, username, password);
+        });
 };
 
-
-async function sendAuthRequest(url, userData) {
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(userData)
-    });
-
-    if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem('authToken', data.token);
-        // Save username and email in local storage
-        localStorage.setItem('username', userData.username);
-        localStorage.setItem('email', userData.email);
-        localStorage.setItem('isLoggedIn', true);
-        window.location.href = 'homepage.html';
-    } else {
-        console.error('Authentication failed');
-    }
-}
-
 async function handleLogon(email, username, password) {
-    const errorDiv = document.getElementById('errorDiv');
-    const errorMessage = document.getElementById('errorMessage');
-
-    if (!validateEmail(email)) {
-        errorMessage.innerText = 'Email inválido';
-        errorDiv.style.display = 'flex';
-        console.error('Logon failed: Invalid email');
-        return;
-    }
-    if (!validateUsername(username)) {
-        errorMessage.innerText = 'Usuário inválido (mínimo de 3 caracteres)';
-        errorDiv.style.display = 'flex';
-        console.error('Logon failed: Invalid username (minimum of 3 characters)');
-        return;
-    }
-    if (!validatePassword(password)) {
-        errorMessage.innerText = 'Senha inválida (mínimo de 8 caracteres)';
-        errorDiv.style.display = 'flex';
-        console.error('Logon failed: Invalid password (minimum of 8 characters)');
-        return;
-    }
-
-    // Hide the error message if all validations are successful
-    errorDiv.style.display = 'none';
-
-    // If all validations are successful, log the user in
     try {
-        await sendAuthRequest('your-logon-endpoint', {email, username, password});
-        console.log('Logon successful');
+        if (!validateEmail(email)) {
+            console.error('Logon failed: Invalid email');
+            throw new Error('Email inválido');
+        }
+        if (!validateUsername(username)) {
+            console.error('Logon failed: Invalid username (minimum of 3 characters)');
+            throw new Error('Usuário inválido (mínimo de 3 caracteres)');
+        }
+        if (!validatePassword(password)) {
+            console.error('Logon failed: Invalid password (minimum of 8 characters)');
+            throw new Error('Senha inválida (mínimo de 3 caracteres)');
+        }
+
+        const data = await registerUser(email, password, username);
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('userEmail', email);
+        localStorage.setItem('userName', username);
+
+        window.location.href = 'homepage.html';
     } catch (error) {
-        console.error('Logon failed');
+        const errorDiv = document.getElementById('errorDiv');
+        const errorMessage = document.getElementById('errorMessage');
+        errorDiv.style.display = 'block';
+        errorMessage.innerText = error.message;
     }
 }

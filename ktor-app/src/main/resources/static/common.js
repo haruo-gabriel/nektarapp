@@ -10,10 +10,6 @@ export const apiUrl = 'https://api.themoviedb.org/3';
 export const imagesBaseUrl = 'https://image.tmdb.org/t/p';
 export const queryOptions = '&include_adult=false&language=pt-BR';
 
-export function getWindowWidth() {
-    return window.innerWidth;
-}
-
 export function initializeCommonHtml() {
     generateNavbar();
     generateFooter();
@@ -44,14 +40,15 @@ function generateNavbar() {
         window.location.href = `search.html?q=${encodeURIComponent(searchQuery)}`
     });
 
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('isLoggedIn');
     if (token) {
         const logoutButton = document.getElementById('logout-button');
         logoutButton.style.display = 'block';
         // Add an event listener to the logout button
         logoutButton.addEventListener('click', function() {
-            localStorage.removeItem('token');
+            localStorage.removeItem('isLoggedIn');
             localStorage.removeItem('userEmail');
+            localStorage.removeItem('userName');
             window.location.href = 'homepage.html';
         });
 
@@ -80,25 +77,3 @@ function generateFooter() {
     </footer>
     `;
 }
-
-export function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('pt-BR');
-}
-
-export function validateEmail(email) {
-    // A more comprehensive email validation regex
-    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return regex.test(email);
-}
-
-export function validateUsername(username) {
-    // Check if the username is not empty and has at least 3 characters
-    return username.trim().length >= 3;
-}
-
-export function validatePassword(password) {
-    // Check if the password is not empty and has at least 8 characters
-    return password.trim().length >= 8;
-}
-
