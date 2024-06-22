@@ -1,5 +1,5 @@
 import { apiUrl, imagesBaseUrl, TmdbGetOptions } from "./common.js";
-import { initializeCommonHtml } from "./common.js";
+import {initializeCommonHtml, populateCarousel} from "./common.js";
 
 initializeCommonHtml();
 loadHomePage().catch(error => console.error(error));
@@ -58,18 +58,4 @@ function populateBannerImage(movies){
     const backdropUrl = imagesBaseUrl + '/original' + randomMovie.backdrop_path;
     const bannerImage = document.getElementById('banner-backdrop');
     bannerImage.src = backdropUrl;
-}
-
-function populateCarousel(movies, carouselId){
-    const carousel = document.getElementById(carouselId);
-    carousel.innerHTML = '';
-    movies.forEach(movie => {
-        const img = document.createElement('img');
-        img.src = imagesBaseUrl + '/w200' + movie.poster_path;
-        img.addEventListener('click', () => {
-            localStorage.setItem('currentMovie', JSON.stringify(movie));
-            window.location.href = 'movie-details.html';
-        });
-        carousel.appendChild(img);
-    });
 }

@@ -1,32 +1,52 @@
-import { imagesBaseUrl } from "./common.js";
-import { initializeCommonHtml } from "./common.js";
+import {imagesBaseUrl, populateExampleReviews} from "./common.js";
+import {initializeCommonHtml} from "./common.js";
+import {addFavorite, addReview, getFavorites, removeFavorite} from "./user.js"
 
 window.onload = async function() {
     // Initialize the page
     initializeCommonHtml();
+
     // Retrieve the current movie's data from localStorage
     const currentMovieData = localStorage.getItem('currentMovie')
     if (currentMovieData) {
         const currentMovie = JSON.parse(currentMovieData);
-        console.log(currentMovie);
-        // Set the page title to the movie's title
+        console.log('Current movie:', currentMovie);
         document.title = currentMovie.title;
-        // Populate the page with the movie details
+
         populateMovieDetails(currentMovie).catch(error => console.error(error));
-        // Populate the page with the reviews for the movie
-        populateReviews(currentMovie.id).catch(error => console.error(error));
+
+        // populateReviews(currentMovie.id).catch(error => console.error(error));
+        populateExampleReviews(5);
+
+        // Add an event listener to the review form
+        const reviewForm = document.getElementById('review-form');
+        reviewForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            submitReview();
+        });
     } else {
         console.error('No movie data found in localStorage');
     }
 }
 
+async function toggleFavorite(movieId) {
+    const userEmail = localStorage.getItem('userEmail');
+    const favorites = await getFavorites(userEmail);
+    const favoriteButton = document.getElementById('favorite-button');
+
+    if (favorites.includes(movieId)) {
+        await removeFavorite(userEmail, movieId);
+        favoriteButton.classList.remove('favorited'); // Change the heart icon to black
+    } else {
+        await addFavorite(userEmail, movieId);
+        favoriteButton.classList.add('favorited'); // Change the heart icon to red
+    }
+}
+
 async function populateMovieDetails(movie) {
-    // Create a Date object from the release_date string
     const releaseDate = new Date(movie.release_date);
-    // Format the release date as dd/mm/yyyy
     const formattedReleaseDate = releaseDate.getDate() + '/' + (releaseDate.getMonth() + 1) + '/' + releaseDate.getFullYear();
 
-    // Create the HTML template
     let html = `
         <img id="background-image" src="${imagesBaseUrl}/original${movie.backdrop_path}" alt="${movie.title}">
         <div class="info-container">
@@ -34,6 +54,7 @@ async function populateMovieDetails(movie) {
             <div class="text-container">
                 <h1 id="movie-title">${movie.title}</h1>
                 <div class="general-info">
+                    <button id="favorite-button" onclick="toggleFavorite(${movie.id})">&#10084</button>
                     <p>Data de lançamento: ${formattedReleaseDate}</p>
                     <p>Média dos votos (TMDB): ${movie.vote_average} (${movie.vote_count} votos)</p>
                 </div>
@@ -48,6 +69,7 @@ async function populateMovieDetails(movie) {
     container.innerHTML = html;
 }
 
+/*
 async function populateReviews(movieId) {
     // Fetch the reviews for the current movie
     const response = await fetch(`/api/movies/${movieId}/reviews`);
@@ -62,4 +84,19 @@ async function populateReviews(movieId) {
     // Insert the new HTML into a specific container in the homepage.html page
     const container = document.querySelector('.reviews-container');
     container.innerHTML = reviewsHTML;
+}*/
+
+function submitReview() {
+    const userEmail = localStorage.getItem('userEmail');
+    const movieId = JSON.parse(localStorage.getItem('currentMovie')).id;
+    const star = document.getElementById('review-form-rating').value;
+    const text = document.getElementById('review-form-text').value;
+
+    addReview(userEmail, movieId, star, text)
+        .then(() => {
+            console.log('Review added successfully');
+            // Refresh the page to show the new review
+            location.reload();
+        })
+        .catch(error => console.error(error));
 }
