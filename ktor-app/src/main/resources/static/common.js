@@ -1,3 +1,5 @@
+import {getUserDetailsByEmail, removeReview} from "./user.js";
+
 export const token = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5YzEyNjMzYmFjZjEwNTA0ODc3ZmFjNWVkNDZkMWMxNiIsInN1YiI6IjY2MDQ5OGZmZDdjZDA2MDE2NDg3YmJkZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.mOdCpu98YOj5VA2f3PLUXCwXXtVYs0w2zzLjJk3oZBQ';
 export const TmdbGetOptions = {
     method: 'GET',
@@ -78,6 +80,21 @@ function generateFooter() {
     `;
 }
 
+export function populateCarousel(movies, carouselId){
+    console.log('Populating carousel with movies:', movies);
+    const carousel = document.getElementById(carouselId);
+    carousel.innerHTML = '';
+    movies.forEach(movie => {
+        const img = document.createElement('img');
+        img.src = imagesBaseUrl + '/w200' + movie.poster_path;
+        img.addEventListener('click', () => {
+            localStorage.setItem('currentMovie', JSON.stringify(movie));
+            window.location.href = 'movie-details.html';
+        });
+        carousel.appendChild(img);
+    });
+}
+
 export async function getMoviesFromMovieIds(movieIds) {
     const movies = [];
     for (let movieId of movieIds) {
@@ -98,27 +115,22 @@ export async function getMovieTitleById(movieId) {
     return movie.title;
 }
 
-export function populateCarousel(movies, carouselId){
-    console.log('Populating carousel with movies:', movies);
-    const carousel = document.getElementById(carouselId);
-    carousel.innerHTML = '';
-    movies.forEach(movie => {
-        const img = document.createElement('img');
-        img.src = imagesBaseUrl + '/w200' + movie.poster_path;
-        img.addEventListener('click', () => {
-            localStorage.setItem('currentMovie', JSON.stringify(movie));
-            window.location.href = 'movie-details.html';
-        });
-        carousel.appendChild(img);
-    });
-}
+// REVIEW
 
-export function generateReviewHTML(userName, movieTitle, text, star) {
-    return `
-    <div class="review">
+export async function generateReviewHTML(userEmail, movieId, text, star) {
+    const userName = (await getUserDetailsByEmail(userEmail)).name;
+    const movieTitle = await getMovieTitleById(movieId);
+
+    return  `
+    <div class="review"
+    data-userEmail="${userEmail}"
+    data-movieId="${movieId}"
+    data-star="${star}"
+    data-text="${text}">
         <div class="review-username-title-container">
             <p class="review-username">${userName}</p>
             <p class="review-title">para o filme <i>${movieTitle}</i></p>
+            <button class="delete-review-button">&#128465;</button>
         </div>
         <p class="review-rating">Nota: ${star} de 5</p>
         <p class="review-text">${text}</p>
@@ -126,20 +138,35 @@ export function generateReviewHTML(userName, movieTitle, text, star) {
     `;
 }
 
-function generateExampleReviewsHTML(numberOfReviews) {
-    let reviewsHTML = '';
-    for (let i = 0; i < numberOfReviews; i++) {
-        reviewsHTML += generateReviewHTML(
-            'UsuarioTeste' + (i + 1), // Adjust username for uniqueness
-            'FilmeTeste' + (i + 1),   // Adjust movie title for uniqueness
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque sollicitudin fringilla leo, non porttitor erat eleifend quis. Pellentesque erat mi, sodales eu libero sit amet, consequat hendrerit tortor. Vivamus scelerisque vel magna varius laoreet. Fusce sagittis urna urna, eu molestie lectus ultricies a. Nulla purus tortor, porttitor in iaculis quis, pretium eu diam. Duis quis molestie urna, vitae luctus ante. Mauris cursus commodo elit, nec varius nisl mattis vitae. Nam congue dui a placerat pellentesque. Proin vitae turpis quis lacus euismod gravida ut et nisl. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Integer quis tempus risus. Vestibulum id dui et urna sagittis cursus.',
-            Math.floor(Math.random() * 5) + 1
-        );
+/*
+async function clickDeleteReviewButton(container, userEmail, movieId, star, text) {
+    console.log('Delete review button clicked:', userEmail, movieId, star, text);
+    try {
+        await removeReview(userEmail, movieId, star, text);
+        // Remove the review from the HTML
+    } catch (error) {
+        console.error('Error while removing the review:', error);
     }
-    return reviewsHTML;
 }
+*/
 
-export function populateExampleReviews() {
-    const reviewsContainer = document.getElementById('reviews-list');
-    reviewsContainer.innerHTML = generateExampleReviewsHTML(5);
+
+export function populateExampleReviews(container, numberOfReviews) {
+    for (let i = 0; i < numberOfReviews; i++) {
+        const userName = 'UsuarioTeste' + (i + 1);
+        const movieTitle = 'FilmeTeste';
+        const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque sollicitudin fringilla leo, non porttitor erat eleifend quis. Pellentesque erat mi, sodales eu libero sit amet, consequat hendrerit tortor. Vivamus scelerisque vel magna varius laoreet. Fusce sagittis urna urna, eu molestie lectus ultricies a. Nulla purus tortor, porttitor in iaculis quis, pretium eu diam. Duis quis molestie urna, vitae luctus ante. Mauris cursus commodo elit, nec varius nisl mattis vitae. Nam congue dui a placerat pellentesque. Proin vitae turpis quis lacus euismod gravida ut et nisl. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Integer quis tempus risus. Vestibulum id dui et urna sagittis cursus.';
+        const star = Math.floor(Math.random() * 5) + 1;
+        container.innerHTML += `
+        <div class="review">
+            <div class="review-username-title-container">
+                <p class="review-username">${userName}</p>
+                <p class="review-title">para o filme <i>${movieTitle}</i></p>
+                <button class="delete-review-button">&#128465;</button>
+            </div>
+            <p class="review-rating">Nota: ${star} de 5</p>
+            <p class="review-text">${text}</p>
+        </div>
+        `;
+    }
 }

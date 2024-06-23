@@ -171,6 +171,15 @@ nav, footer {
     margin: 0 12px;
 }
 
+.delete-review-button {
+    transform: translateY(-2px);
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: red;
+    font-size: 1.1em;
+}
+
 .review-rating {
     padding: 0 8px;
 }

@@ -1,10 +1,10 @@
-import {imagesBaseUrl, populateExampleReviews} from "./common.js";
+import {generateReviewHTML, imagesBaseUrl, populateExampleReviews} from "./common.js";
 import {initializeCommonHtml} from "./common.js";
 import {
     addFavorite,
     addReview,
     addWatchlist,
-    getFavorites,
+    getFavorites, getReviewsFromMovieId,
     getWatchlist,
     removeFavorite,
     removeWatchlist
@@ -23,8 +23,9 @@ window.onload = async function() {
 
         populateMovieDetails(currentMovie).catch(error => console.error(error));
 
-        // populateReviews(currentMovie.id).catch(error => console.error(error));
-        populateExampleReviews(5);
+        const reviewsContainer = document.getElementById('reviews-list');
+        // populateReviews(reviewsContainer, currentMovie.id).catch(error => console.error(error));
+        populateExampleReviews(reviewsContainer, 5);
 
         // Add an event listener to the review form
         const reviewForm = document.getElementById('review-form');
@@ -116,19 +117,14 @@ async function toggleWatchlist(userEmail, movieId, watchlistButton) {
 }
 
 /*
-async function populateReviews(movieId) {
-    // Fetch the reviews for the current movie
-    const reviews = await getReviewsForMovie(movieId);
+async function populateReviews(container, movieId) {
+    const reviews = await getReviewsFromMovieId(movieId);
 
-    // Create the HTML template for the reviews
-    let reviewsHTML = '';
     reviews.forEach(review => {
-        reviewsHTML += generateReviewHTML(review.username, review.creationDate, review.reviewText);
-    });
+        container.innerHTML += generateReviewHTML(review.email, review.movieid, review.text, review.star);
 
-    // Insert the new HTML into a specific container in the homepage.html page
-    const container = document.querySelector('.reviews-container');
-    container.innerHTML = reviewsHTML;
+        // Add an event listener to each delete button
+    });
 }
 */
 

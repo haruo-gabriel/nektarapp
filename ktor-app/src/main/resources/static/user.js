@@ -138,14 +138,18 @@ export async function addWatchlist(userEmail, movieId) {
     }
 }
 
-export async function addReview(email, movieId, star, text) {
+export async function addReview(userEmail, movieId, userStar, userText) {
     try {
         const response = await fetch(`http://localhost:8080/v1/reviews/addReview`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({email, movieId, star, text})
+            body: JSON.stringify({
+                email: userEmail,
+                movieid: movieId,
+                star: userStar,
+                text: userText})
         });
         console.log('Add review response:', response);
         if (!response.ok) {
@@ -209,6 +213,34 @@ export async function removeWatchlist(email, movieId) {
 
 }
 
+export async function removeReview(userEmail, movieId, userStar, userText) {
+    try {
+        const response = await fetch(`http://localhost:8080/v1/reviews/deleteReview`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: userEmail,
+                movieid: movieId,
+                star: userStar,
+                text: userText
+            })
+        });
+        console.log('Remove review response:', response);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const data = await response.text();
+        console.log('Review removed:', data);
+        return data;
+    } catch (error) {
+        console.error('Error while removing the review:', error);
+        throw error;
+    }
+}
+
 // GET FAVORITES, WATCHLIST AND REVIEWS
 
 export async function getFavorites(email) {
@@ -257,16 +289,35 @@ export async function getReviewsFromUser(email) {
             method: 'GET'
         });
 
-        console.log('Reviews response:', response);
+        console.log('User reviews response:', response);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
 
         const data = await response.json();
-        console.log('Reviews data:', data);
+        console.log('User reviews data:', data);
         return data;
     } catch (error) {
-        console.error('Error while fetching the reviews:', error);
+        console.error('Error while fetching the user reviews:', error);
         throw error;
+    }
+}
+
+export async function getReviewsFromMovieId(movieId) {
+    try {
+        const response = await fetch(`http://localhost:8080/v1/reviews/getReviewsByMovieId/${movieId}`, {
+            method: 'GET'
+        });
+
+        console.log('Movie reviews response:', response);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        console.log('Movie reviews data:', data);
+        return data;
+    } catch (error) {
+        console.error('Error while fetching the movie reviews>', error);
     }
 }

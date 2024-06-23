@@ -6,17 +6,20 @@ import {
     populateCarousel,
     populateExampleReviews
 } from "./common.js";
-import {getFavorites, getReviewsFromUser, getWatchlist} from "./user.js";
+import {getFavorites, getReviewsFromUser, getUserDetailsByEmail, getWatchlist, removeReview} from "./user.js";
 
-window.onload = function() {
+window.onload = async function () {
     initializeCommonHtml();
     setPageTitle();
     setUsernameHTML();
 
+    const userEmail = localStorage.getItem('userEmail');
+
     populateUserFavorites().catch(error => console.error(error));
     populateUserWatchlist().catch(error => console.error(error));
 
-    populateReviews().catch(error => console.error(error));
+    const reviews = await getReviewsFromUser(userEmail);
+    populateUserReviews(reviews).catch(error => console.error(error));
     // populateExampleReviews();
 };
 
@@ -53,17 +56,17 @@ async function populateUserWatchlist() {
     }
 }
 
-async function populateReviews() {
-    const userEmail = localStorage.getItem('userEmail');
-    const userName = localStorage.getItem('userName');
+async function populateUserReviews(reviews) {
     try {
-        const reviews = await getReviewsFromUser(userEmail);
         const reviewsContainer = document.getElementById('reviews-list');
         reviewsContainer.innerHTML = '';
         for (const review of reviews) {
-            const movieTitle = await getMovieTitleById(review.movieid);
-            const reviewHTML = generateReviewHTML(userName, movieTitle, review.text, review.star);
-            reviewsContainer.innerHTML += reviewHTML;
+            reviewsContainer.innerHTML += await generateReviewHTML(review.email, review.movieid, review.text, review.star);
+
+            // Add an event listener to each delete button
+            // deleteButton.addEventListener('click', async function () {
+            //     await removeReview(review.email, review.movieid);
+            // });
         }
     } catch (error) {
         console.error('Error while fetching the reviews:', error);
