@@ -1,4 +1,5 @@
 import {
+    generateReviewHTML,
     getMoviesFromMovieIds,
     getMovieTitleById,
     initializeCommonHtml,
@@ -11,10 +12,12 @@ window.onload = function() {
     initializeCommonHtml();
     setPageTitle();
     setUsernameHTML();
+
     populateUserFavorites().catch(error => console.error(error));
     populateUserWatchlist().catch(error => console.error(error));
-    // populateReviews();
-    populateExampleReviews();
+
+    populateReviews().catch(error => console.error(error));
+    // populateExampleReviews();
 };
 
 function setPageTitle() {
@@ -52,13 +55,14 @@ async function populateUserWatchlist() {
 
 async function populateReviews() {
     const userEmail = localStorage.getItem('userEmail');
+    const userName = localStorage.getItem('userName');
     try {
         const reviews = await getReviewsFromUser(userEmail);
         const reviewsContainer = document.getElementById('reviews-list');
         reviewsContainer.innerHTML = '';
         for (const review of reviews) {
             const movieTitle = await getMovieTitleById(review.movieid);
-            const reviewHTML = generateReviewHTML(movieTitle, review.text, review.star);
+            const reviewHTML = generateReviewHTML(userName, movieTitle, review.text, review.star);
             reviewsContainer.innerHTML += reviewHTML;
         }
     } catch (error) {
