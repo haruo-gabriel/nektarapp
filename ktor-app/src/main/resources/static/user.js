@@ -251,7 +251,9 @@ export async function getFavorites(email) {
 
         console.log('Favorites response:', response);
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            // throw new Error('Network response was not ok');
+            // Return a default empty array if the user has no favorites
+            return [];
         }
 
         const data = await response.json();
@@ -271,7 +273,8 @@ export async function getWatchlist(email) {
 
         console.log('Watchlist response:', response);
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            // throw new Error('Network response was not ok');
+            return [];
         }
 
         const data = await response.json();
@@ -291,7 +294,8 @@ export async function getReviewsFromUser(email) {
 
         console.log('User reviews response:', response);
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            // throw new Error('Network response was not ok');
+            return [];
         }
 
         const data = await response.json();
@@ -311,7 +315,8 @@ export async function getReviewsFromMovieId(movieId) {
 
         console.log('Movie reviews response:', response);
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            // throw new Error('Network response was not ok');
+            return []
         }
 
         const data = await response.json();
