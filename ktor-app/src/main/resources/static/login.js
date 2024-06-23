@@ -1,5 +1,5 @@
-import {initializeCommonHtml} from "./common.js";
-import {getUserDetailsByEmail, loginUser} from "./user.js";
+import {getMoviesFromMovieIds, initializeCommonHtml} from "./common.js";
+import {getFavorites, getUserDetailsByEmail, loginUser} from "./user.js";
 
 window.onload = function() {
     initializeCommonHtml();
@@ -23,6 +23,11 @@ async function handleLogin(email, password) {
 
         const userData = await getUserDetailsByEmail(email);
         localStorage.setItem('userName', userData.name);
+
+        // Get the user favorites and watchlist to store in localStorage
+        // const favoritesIds = await getFavorites(email);
+        // const favorites = await getMoviesFromMovieIds(favoritesIds);
+        // localStorage.setItem('userFavorites', JSON.stringify(favorites));
 
         window.location.href = 'homepage.html';
     } catch (error) {

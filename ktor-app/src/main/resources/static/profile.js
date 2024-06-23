@@ -11,8 +11,8 @@ window.onload = function() {
     initializeCommonHtml();
     setPageTitle();
     setUsernameHTML();
-    populateUserFavorites();
-    populateUserWatchlist();
+    populateUserFavorites().catch(error => console.error(error));
+    populateUserWatchlist().catch(error => console.error(error));
     // populateReviews();
     populateExampleReviews();
 };

@@ -86,14 +86,17 @@ export async function getUserDetailsByEmail(email) {
 
 // ADD TO FAVORITES, WATCHLIST AND REVIEWS
 
-export async function addFavorite(email, movieId) {
+export async function addFavorite(userEmail, movieId) {
     try {
         const response = await fetch(`http://localhost:8080/v1/users/favorites`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({email, movieId})
+            body: JSON.stringify({
+                email: userEmail,
+                id: movieId
+            })
         });
         console.log('Add favorite response:', response);
         if (!response.ok) {
@@ -109,14 +112,17 @@ export async function addFavorite(email, movieId) {
     }
 }
 
-export async function addWatchlist(email, movieId) {
+export async function addWatchlist(userEmail, movieId) {
     try {
         const response = await fetch(`http://localhost:8080/v1/users/watchlist`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({email, movieId})
+            body: JSON.stringify({
+                email: userEmail,
+                id: movieId
+            })
         });
         console.log('Add watchlist response:', response);
         if (!response.ok) {
