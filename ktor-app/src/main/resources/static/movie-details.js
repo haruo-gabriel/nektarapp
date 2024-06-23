@@ -72,8 +72,7 @@ async function populateMovieDetails(movie) {
 /*
 async function populateReviews(movieId) {
     // Fetch the reviews for the current movie
-    const response = await fetch(`/api/movies/${movieId}/reviews`);
-    const reviews = await response.json();
+    const reviews = await getReviewsForMovie(movieId);
 
     // Create the HTML template for the reviews
     let reviewsHTML = '';
@@ -84,7 +83,8 @@ async function populateReviews(movieId) {
     // Insert the new HTML into a specific container in the homepage.html page
     const container = document.querySelector('.reviews-container');
     container.innerHTML = reviewsHTML;
-}*/
+}
+*/
 
 function submitReview() {
     const userEmail = localStorage.getItem('userEmail');

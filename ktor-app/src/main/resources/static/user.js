@@ -185,7 +185,7 @@ export async function addReview(email, movieId, star, text) {
 
 export async function getFavorites(email) {
     try {
-        const response = await fetch(`http://localhost:8080/v1/user/${email}/favorites`, {
+        const response = await fetch(`http://localhost:8080/user/${email}/favorites`, {
             method: 'GET'
         });
 
@@ -205,7 +205,7 @@ export async function getFavorites(email) {
 
 export async function getWatchlist(email) {
     try {
-        const response = await fetch(`http://localhost:8080/v1/user/${email}/watchlist`, {
+        const response = await fetch(`http://localhost:8080/user/${email}/watchlist`, {
             method: 'GET'
         });
 

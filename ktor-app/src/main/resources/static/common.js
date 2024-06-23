@@ -99,6 +99,7 @@ export async function getMovieTitleById(movieId) {
 }
 
 export function populateCarousel(movies, carouselId){
+    console.log('Populating carousel with movies:', movies);
     const carousel = document.getElementById(carouselId);
     carousel.innerHTML = '';
     movies.forEach(movie => {

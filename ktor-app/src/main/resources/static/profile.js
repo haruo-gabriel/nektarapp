@@ -11,8 +11,8 @@ window.onload = function() {
     initializeCommonHtml();
     setPageTitle();
     setUsernameHTML();
-    // populateUserFavorites();
-    // populateUserWatchlist();
+    populateUserFavorites();
+    populateUserWatchlist();
     // populateReviews();
     populateExampleReviews();
 };
@@ -24,7 +24,6 @@ function setPageTitle() {
 function setUsernameHTML() {
     const usernameHTML = document.getElementById('username');
     usernameHTML.innerText = '@' + localStorage.getItem('userName');
-    // usernameHTML.innerText = '@' + 'usuarioTeste';
 }
 
 async function populateUserFavorites() {
