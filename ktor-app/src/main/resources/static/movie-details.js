@@ -1,6 +1,14 @@
 import {imagesBaseUrl, populateExampleReviews} from "./common.js";
 import {initializeCommonHtml} from "./common.js";
-import {addFavorite, addReview, getFavorites, removeFavorite} from "./user.js"
+import {
+    addFavorite,
+    addReview,
+    addWatchlist,
+    getFavorites,
+    getWatchlist,
+    removeFavorite,
+    removeWatchlist
+} from "./user.js"
 
 window.onload = async function() {
     // Initialize the page
@@ -41,6 +49,7 @@ async function populateMovieDetails(movie) {
                 <h1 id="movie-title">${movie.title}</h1>
                 <div class="general-info">
                     <button id="favorite-button"">&#10084</button>
+                    <button id="watchlist-button">&#9673</button>
                     <p>Data de lançamento: ${formattedReleaseDate}</p>
                     <p>Média dos votos (TMDB): ${movie.vote_average} (${movie.vote_count} votos)</p>
                 </div>
@@ -53,25 +62,37 @@ async function populateMovieDetails(movie) {
     const container = document.querySelector('.movie-details-container');
     container.innerHTML = html;
 
-    const favoriteButton = document.getElementById('favorite-button');
-    // Initialize the color of the favorite button
     const userEmail = localStorage.getItem('userEmail');
+
+    // Initialize the color of the favorite button
+    const favoriteButton = document.getElementById('favorite-button');
     const favorites = await getFavorites(userEmail);
     if (favorites.includes(movie.id)) {
         favoriteButton.classList.add('favorited');
     } else {
         favoriteButton.classList.remove('favorited');
     }
-    // Add an event listener to the favorite button
+
+    // Initialize the color of the watchlist button
+    const watchlistButton = document.getElementById('watchlist-button');
+    const watchlist = await getWatchlist(userEmail);
+    if (watchlist.includes(movie.id)) {
+        watchlistButton.classList.add('watchlisted');
+    } else {
+        watchlistButton.classList.remove('watchlisted');
+    }
+
+    // Add event listeners to the favorite and watchlist buttons
     favoriteButton.addEventListener('click', async function () {
-        await toggleFavorite(movie.id);
+        await toggleFavorite(userEmail, movie.id, favoriteButton);
+    });
+    watchlistButton.addEventListener('click', async function () {
+        await toggleWatchlist(userEmail, movie.id, watchlistButton);
     });
 }
 
-async function toggleFavorite(movieId) {
-    const userEmail = localStorage.getItem('userEmail');
+async function toggleFavorite(userEmail, movieId, favoriteButton) {
     const favorites = await getFavorites(userEmail);
-    const favoriteButton = document.getElementById('favorite-button');
 
     if (favorites.includes(movieId)) {
         await removeFavorite(userEmail, movieId);
@@ -79,6 +100,18 @@ async function toggleFavorite(movieId) {
     } else {
         await addFavorite(userEmail, movieId);
         favoriteButton.classList.add('favorited'); // Change the heart icon to red
+    }
+}
+
+async function toggleWatchlist(userEmail, movieId, watchlistButton) {
+    const watchlist = await getWatchlist(userEmail);
+
+    if (watchlist.includes(movieId)) {
+        await removeWatchlist(userEmail, movieId);
+        watchlistButton.classList.remove('watchlisted'); // Change the heart icon to black
+    } else {
+        await addWatchlist(userEmail, movieId);
+        watchlistButton.classList.add('watchlisted'); // Change the heart icon to red
     }
 }
 

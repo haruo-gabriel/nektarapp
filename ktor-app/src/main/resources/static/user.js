@@ -138,32 +138,6 @@ export async function addWatchlist(userEmail, movieId) {
     }
 }
 
-// REMOVE FROM FAVORITES, WATCHLIST AND REVIEWS
-
-export async function removeFavorite(email, movieId) {
-    try {
-        const response = await fetch(`http://localhost:8080/favoritesDelete/${email}/${movieId}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({email, movieId})
-        });
-        console.log('Remove favorite response:', response);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-
-        const data = await response.json();
-        console.log('Favorite removed:', data);
-        return data;
-    } catch (error) {
-        console.error('Error while removing the favorite:', error);
-        throw error;
-    }
-
-}
-
 export async function addReview(email, movieId, star, text) {
     try {
         const response = await fetch(`http://localhost:8080/v1/reviews/addReview`, {
@@ -185,6 +159,54 @@ export async function addReview(email, movieId, star, text) {
         console.error('Error while adding the review:', error);
         throw error;
     }
+}
+
+// REMOVE FROM FAVORITES, WATCHLIST AND REVIEWS
+
+export async function removeFavorite(email, movieId) {
+    try {
+        const response = await fetch(`http://localhost:8080/favoritesDelete/${email}/${movieId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        console.log('Remove favorite response:', response);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const data = await response.text();
+        console.log('Favorite removed:', data);
+        return data;
+    } catch (error) {
+        console.error('Error while removing the favorite:', error);
+        throw error;
+    }
+
+}
+
+export async function removeWatchlist(email, movieId) {
+    try {
+        const response = await fetch(`http://localhost:8080/watchlistDelete/${email}/${movieId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        console.log('Remove from the watchlist response:', response);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const data = await response.text();
+        console.log('Favorite removed:', data);
+        return data;
+    } catch (error) {
+        console.error('Error while removing from the watchlist:', error);
+        throw error;
+    }
+
 }
 
 // GET FAVORITES, WATCHLIST AND REVIEWS

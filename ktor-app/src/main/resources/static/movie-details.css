@@ -57,20 +57,21 @@
 .general-info {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: baseline;
 }
 
 .general-info p {
     margin-right: 20px;
 }
 
-/*FAVORITE BUTTON*/
+/*FAVORITE AND WATCHLIST BUTTONS*/
 
 #favorite-button {
-    margin-right: 10px;
+    transform: translateY(4px);
+    margin-right: 4px;
     border: none;
     background-color: transparent;
-    font-size: 1.5em;
+    font-size: 1.6em;
     cursor: pointer;
 }
 
@@ -79,6 +80,22 @@
 }
 
 #favorite-button:not(.favorited) {
+    color: black;
+}
+
+#watchlist-button {
+    margin-right: 10px;
+    border: none;
+    background-color: transparent;
+    font-size: 1.5em;
+    cursor: pointer;
+}
+
+#watchlist-button.watchlisted {
+    color: white;
+}
+
+#watchlist-button:not(.watchlisted) {
     color: black;
 }
 
