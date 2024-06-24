@@ -1,32 +1,47 @@
-import { imagesBaseUrl } from "./constants.js";
-import { initializeCommonHtml } from "./common.js";
+import {generateReviewHTML, imagesBaseUrl, populateExampleReviews} from "./common.js";
+import {initializeCommonHtml} from "./common.js";
+import {
+    addFavorite,
+    addReview,
+    addWatchlist,
+    getFavorites, getReviewsFromMovieId,
+    getWatchlist,
+    removeFavorite,
+    removeWatchlist
+} from "./user.js"
 
 window.onload = async function() {
     // Initialize the page
     initializeCommonHtml();
+
     // Retrieve the current movie's data from localStorage
     const currentMovieData = localStorage.getItem('currentMovie')
     if (currentMovieData) {
         const currentMovie = JSON.parse(currentMovieData);
-        console.log(currentMovie);
-        // Set the page title to the movie's title
+        console.log('Current movie:', currentMovie);
         document.title = currentMovie.title;
-        // Populate the page with the movie details
+
         populateMovieDetails(currentMovie).catch(error => console.error(error));
-        // Populate the page with the reviews for the movie
-        populateReviews(currentMovie.id).catch(error => console.error(error));
+
+        const reviewsContainer = document.getElementById('reviews-list');
+        // populateReviews(reviewsContainer, currentMovie.id).catch(error => console.error(error));
+        populateExampleReviews(reviewsContainer, 5);
+
+        // Add an event listener to the review form
+        const reviewForm = document.getElementById('review-form');
+        reviewForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            submitReview();
+        });
     } else {
         console.error('No movie data found in localStorage');
     }
 }
 
 async function populateMovieDetails(movie) {
-    // Create a Date object from the release_date string
     const releaseDate = new Date(movie.release_date);
-    // Format the release date as dd/mm/yyyy
     const formattedReleaseDate = releaseDate.getDate() + '/' + (releaseDate.getMonth() + 1) + '/' + releaseDate.getFullYear();
 
-    // Create the HTML template
     let html = `
         <img id="background-image" src="${imagesBaseUrl}/original${movie.backdrop_path}" alt="${movie.title}">
         <div class="info-container">
@@ -34,6 +49,8 @@ async function populateMovieDetails(movie) {
             <div class="text-container">
                 <h1 id="movie-title">${movie.title}</h1>
                 <div class="general-info">
+                    <button id="favorite-button"">&#10084</button>
+                    <button id="watchlist-button">&#9673</button>
                     <p>Data de lançamento: ${formattedReleaseDate}</p>
                     <p>Média dos votos (TMDB): ${movie.vote_average} (${movie.vote_count} votos)</p>
                 </div>
@@ -43,23 +60,85 @@ async function populateMovieDetails(movie) {
         </div>
     `;
 
-    // Insert the new HTML into a specific container in the homepage.html page
     const container = document.querySelector('.movie-details-container');
     container.innerHTML = html;
+
+    const userEmail = localStorage.getItem('userEmail');
+
+    // Initialize the color of the favorite button
+    const favoriteButton = document.getElementById('favorite-button');
+    const favorites = await getFavorites(userEmail);
+    if (favorites.includes(movie.id)) {
+        favoriteButton.classList.add('favorited');
+    } else {
+        favoriteButton.classList.remove('favorited');
+    }
+
+    // Initialize the color of the watchlist button
+    const watchlistButton = document.getElementById('watchlist-button');
+    const watchlist = await getWatchlist(userEmail);
+    if (watchlist.includes(movie.id)) {
+        watchlistButton.classList.add('watchlisted');
+    } else {
+        watchlistButton.classList.remove('watchlisted');
+    }
+
+    // Add event listeners to the favorite and watchlist buttons
+    favoriteButton.addEventListener('click', async function () {
+        await toggleFavorite(userEmail, movie.id, favoriteButton);
+    });
+    watchlistButton.addEventListener('click', async function () {
+        await toggleWatchlist(userEmail, movie.id, watchlistButton);
+    });
 }
 
-async function populateReviews(movieId) {
-    // Fetch the reviews for the current movie
-    const response = await fetch(`/api/movies/${movieId}/reviews`);
-    const reviews = await response.json();
+async function toggleFavorite(userEmail, movieId, favoriteButton) {
+    const favorites = await getFavorites(userEmail);
 
-    // Create the HTML template for the reviews
-    let reviewsHTML = '';
+    if (favorites.includes(movieId)) {
+        await removeFavorite(userEmail, movieId);
+        favoriteButton.classList.remove('favorited'); // Change the heart icon to black
+    } else {
+        await addFavorite(userEmail, movieId);
+        favoriteButton.classList.add('favorited'); // Change the heart icon to red
+    }
+}
+
+async function toggleWatchlist(userEmail, movieId, watchlistButton) {
+    const watchlist = await getWatchlist(userEmail);
+
+    if (watchlist.includes(movieId)) {
+        await removeWatchlist(userEmail, movieId);
+        watchlistButton.classList.remove('watchlisted'); // Change the heart icon to black
+    } else {
+        await addWatchlist(userEmail, movieId);
+        watchlistButton.classList.add('watchlisted'); // Change the heart icon to red
+    }
+}
+
+/*
+async function populateReviews(container, movieId) {
+    const reviews = await getReviewsFromMovieId(movieId);
+
     reviews.forEach(review => {
-        reviewsHTML += generateReviewHTML(review.username, review.creationDate, review.reviewText);
-    });
+        container.innerHTML += generateReviewHTML(review.email, review.movieid, review.text, review.star);
 
-    // Insert the new HTML into a specific container in the homepage.html page
-    const container = document.querySelector('.reviews-container');
-    container.innerHTML = reviewsHTML;
+        // Add an event listener to each delete button
+    });
+}
+*/
+
+function submitReview() {
+    const userEmail = localStorage.getItem('userEmail');
+    const movieId = JSON.parse(localStorage.getItem('currentMovie')).id;
+    const star = document.getElementById('review-form-rating').value;
+    const text = document.getElementById('review-form-text').value;
+
+    addReview(userEmail, movieId, star, text)
+        .then(() => {
+            console.log('Review added successfully');
+            // Refresh the page to show the new review
+            location.reload();
+        })
+        .catch(error => console.error(error));
 }
