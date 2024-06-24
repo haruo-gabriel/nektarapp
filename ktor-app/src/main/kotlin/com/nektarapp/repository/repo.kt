@@ -89,6 +89,12 @@ class repo {
             .map { it[WatchlistTable.movieid] }
     }
 
+    suspend fun findAllMovieReviews(movieid: Int): List<Review> = dbQuery {
+        ReviewTable.select { ReviewTable.movieid.eq(movieid) }
+            .map { rowToReview(it) }
+            .filterNotNull()
+    }
+
     private fun rowToReview(row: ResultRow?): Review? {
         if (row == null) {
             return null

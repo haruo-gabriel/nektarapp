@@ -13,6 +13,7 @@ import io.ktor.server.routing.*
 const val REVIEWS = "$API_VERSION/reviews"
 const val ADD_REVIEW = "$REVIEWS/addReview"
 const val GET_REVIEWS = "$REVIEWS/getReviews/{email}"
+const val GET_FREVIEWS = "$REVIEWS/getFReviews/{movieid}"
 const val DELETE_REVIEW = "$REVIEWS/deleteReview"
 
 fun Route.ReviewRoutes(
@@ -75,6 +76,20 @@ fun Route.ReviewRoutes(
             }
         } else {
             call.respondText("Missing or malformed email", status = HttpStatusCode.BadRequest)
+        }
+    }
+
+    get (GET_FREVIEWS) {
+        val movieid = call.parameters["movieid"]
+        if (movieid != null) {
+            val reviews = db.findAllMovieReviews(movieid.toInt())
+            if (reviews.isNotEmpty()) {
+                call.respond(reviews)
+            } else {
+                call.respondText("Review não encontrada", status = HttpStatusCode.NotFound)
+            }
+        } else {
+            call.respondText("Missing or malformed movieid", status = HttpStatusCode.BadRequest)
         }
     }
 }

@@ -1,4 +1,3 @@
-import com.nektarapp.authentication.hash
 import com.nektarapp.data.model.Review
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -6,7 +5,6 @@ import com.nektarapp.repository.repo
 import com.nektarapp.data.model.User
 import com.nektarapp.repository.DatabaseFactory
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.BeforeAll
 
 // classe que testa todas as funções de back end
 class Test {
@@ -48,7 +46,52 @@ class Test {
         assertEquals(5, result[0].star)
         assertEquals("muito bom", result[0].text)
     }
-
+    // teste que deleta uma review e verifica se ela foi deletada
+    @Test
+    fun `test delete review`() {
+        val db = repo()
+        val review = Review(
+            email = "teste@mail.com",
+            movieid = 1,
+            star = 5,
+            text = "muito bom"
+        )
+        runBlocking { db.deleteReview(review) }
+        val result = runBlocking { db.findAllUserReviews("teste@gmail.com") }
+        assertEquals(0, result.size)
+    }
+    // teste que adiciona um filme na watchlist e verifica se ele foi adicionado
+    @Test
+    fun `test watchlist`() {
+        val db = repo()
+        runBlocking { db.addWatchlist("teste@gmail.com", 1) }
+        val result = runBlocking { db.findAllUserWatchlist("teste@gmail.com") }
+        assertEquals(1, result[0])
+    }
+    // teste que deleta um filme da watchlist e verifica se ele foi deletado
+    @Test
+    fun `test delete watchlist`() {
+        val db = repo()
+        runBlocking { db.deleteWatchlist("teste@gmail.com", 1) }
+        val result = runBlocking { db.findAllUserWatchlist("teste@gmail.com") }
+        assertEquals(0, result.size)
+    }
+    // teste que adiciona um filme na lista de favoritos e verifica se ele foi adicionado
+    @Test
+    fun `test favorites`() {
+        val db = repo()
+        runBlocking { db.addFavorite("teste@gmail.com", 1) }
+        val result = runBlocking { db.findAllUserFavorites("teste@gmail.com") }
+        assertEquals(1, result[0])
+    }
+    // teste que deleta um filme da lista de favoritos e verifica se ele foi deletado
+    @Test
+    fun `test delete favorites`() {
+        val db = repo()
+        runBlocking { db.deleteFavorite("teste@gmail.com", 1) }
+        val result = runBlocking { db.findAllUserFavorites("teste@gmail.com") }
+        assertEquals(0, result.size)
+    }
     // teste que deleta um usuario e verifica se ele foi deletado
     @Test
     fun `test delete user`() {
